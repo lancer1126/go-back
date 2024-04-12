@@ -1,18 +1,20 @@
 package core
 
 import (
-	"fmt"
 	"go-back/global"
+	"go.uber.org/zap"
 )
 
 func Init() {
 	global.GB_VP = Viper()
+	global.GB_LOG = Zap()
+	zap.ReplaceGlobals(global.GB_LOG)
 	global.GB_DB = Gorm()
+	if global.GB_DB != nil {
+		RegisterTables()
+	}
 }
 
 func RunServe() {
-	Router := Routers()
-	Router.Static("/form-generator", "./resource/page")
-	addr := fmt.Sprintf(":%d", global.GB_CONFIG.System.Addr)
-	initServer(addr, Router)
+	// todo RunServe
 }

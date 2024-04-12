@@ -3,6 +3,7 @@ package core
 import (
 	"flag"
 	"fmt"
+	"github.com/fsnotify/fsnotify"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"go-back/core/internal"
@@ -14,13 +15,21 @@ func Viper(path ...string) *viper.Viper {
 	v := viper.New()
 	v.SetConfigFile(parseConfig(path...))
 	v.SetConfigType("yaml")
-	if err := v.ReadInConfig(); err != nil {
+
+	err := v.ReadInConfig()
+	if err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
 	v.WatchConfig()
 
-	if err := v.Unmarshal(&global.GB_CONFIG); err != nil {
-		fmt.Println(err)
+	v.OnConfigChange(func(e fsnotify.Event) {
+		fmt.Println("config file changed:", e.Name)
+		if err = v.Unmarshal(&global.GB_CONFIG); err != nil {
+			fmt.Println(err)
+		}
+	})
+	if err = v.Unmarshal(&global.GB_CONFIG); err != nil {
+		panic(err)
 	}
 	return v
 }

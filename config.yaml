@@ -1,0 +1,10 @@
+zap:
+  level: info
+  prefix: '[go-back]'
+  format: console
+  director: log
+  encode-level: CapitalLevelEncoder
+  stacktrace-key: stacktrace
+  max-age: 0
+  show-line: true
+  log-in-console: true

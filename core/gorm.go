@@ -16,6 +16,10 @@ func Gorm() *gorm.DB {
 	}
 }
 
+func RegisterTables() {
+	// todo RegisterTables
+}
+
 func GormMysql() *gorm.DB {
 	m := global.GB_CONFIG.Mysql
 	if m.Dbname == "" {

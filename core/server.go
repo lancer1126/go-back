@@ -20,7 +20,6 @@ func Routers() *gin.Engine {
 	if global.GB_CONFIG.System.Env != "public" {
 		Router.Use(gin.Logger(), gin.Recovery())
 	}
-	// todo
 	return Router
 }
 
