@@ -3,8 +3,11 @@ package core
 import (
 	"fmt"
 	"go-back/global"
+	"go-back/model/system"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"os"
 )
 
 func Gorm() *gorm.DB {
@@ -14,10 +17,6 @@ func Gorm() *gorm.DB {
 	default:
 		return GormMysql()
 	}
-}
-
-func RegisterTables() {
-	// todo RegisterTables
 }
 
 func GormMysql() *gorm.DB {
@@ -41,4 +40,17 @@ func GormMysql() *gorm.DB {
 		sqlDB.SetMaxOpenConns(m.MaxOpenConns)
 		return db
 	}
+}
+
+// RegisterTables 将model的变动自动映射到数据库中
+func RegisterTables() {
+	db := global.GB_DB
+	err := db.AutoMigrate(
+		system.SysApi{},
+	)
+	if err != nil {
+		global.GB_LOG.Error("register table failed", zap.Error(err))
+		os.Exit(0)
+	}
+	global.GB_LOG.Info("register table success")
 }
